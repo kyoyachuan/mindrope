@@ -131,3 +131,5 @@ dmypy.json
 # data stuffs
 data/
 processed_data.zip
+outputs/
+*/*.pth

@@ -1,0 +1,36 @@
+wandb:
+  name: 'kl_cyclical'
+  project: 'DLPLAB4'
+  entity: 'kyoyachuan' 
+
+data:
+  data_root: '/home/kyoyachuan/mindrope/data'
+  n_past: 2
+  n_future: 10
+  sliding_window: true
+  batch_size: 32
+
+model:
+  model_path: '/home/kyoyachuan/mindrope/model/kl_cyclical.pth'
+  cond_convolution: false
+  learned_prior: false
+  prior_rnn_layers: 1
+  rnn_size: 256
+  posterior_rnn_layers: 1
+  predictor_rnn_layers: 2
+  z_dim: 64
+  g_dim: 128
+  last_frame_skip: true
+
+trainer:
+  niters: 3
+  epoch_size: 3
+  lr: 0.002
+  kl_anneal_cyclical: true
+  kl_anneal_ratio: 2
+  kl_anneal_cycle: 3
+  tfr: 1.0
+  tfr_start_decay_epoch: 100
+  tfr_decay_step: 0.003
+  tfr_lower_bound: 0.1
+  evaluate_interval: 1
