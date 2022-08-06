@@ -1,0 +1,9 @@
+numpy==1.21.6
+wandb==0.12.21
+torch==1.12.0
+torchvision==0.13.0
+tqdm==4.28.1
+pillow==5.3.0
+scikit-image==0.16.1
+scipy==1.1.0
+hydra-core==1.1.0
