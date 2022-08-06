@@ -1,3 +1,7 @@
+base:
+  seed: 1
+  num_workers: 6
+
 wandb:
   name: 'kl_monotonic'
   project: 'DLPLAB4'
