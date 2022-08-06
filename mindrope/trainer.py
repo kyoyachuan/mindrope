@@ -18,7 +18,7 @@ class Trainer:
         self.evaluator = Evaluator(model, test_data_loader)
         self.train_cfg = train_cfg
         self.wandb_cfg = wandb_cfg
-        self.init_wandb()
+        # self.init_wandb()
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=train_cfg.lr)
         self.kl_annealer = KLAnnealing(
@@ -60,21 +60,22 @@ class Trainer:
             if epoch % self.train_cfg.evaluate_interval == 0 or epoch == self.train_cfg.niters - 1:
                 psnr, seq = self.evaluator.evaluate(n_past=n_past, n_future=n_future, return_last_seq=True)
                 img = make_grid(torch.cat([seq[0], seq[1]]), nrow=n_past + n_future).cpu().numpy()
+                video = seq[1].cpu().numpy().astype(np.uint8)
                 result_dict['psnr'] = psnr
                 result_dict['image'] = wandb.Image(np.transpose(img, (1, 2, 0)))
-                result_dict['video'] = wandb.Video(seq[1].cpu().numpy(), format='gif')
+                result_dict['video'] = wandb.Video(video)
 
                 if self.model.best_psnr < psnr:
                     self.model.best_psnr = psnr
                     self.model.best_epoch = epoch
                     self.model.save_model()
-                    wandb.alert(
-                        title='Improvement!',
-                        text=f'New best psnr: {psnr} in {self.wandb_cfg.name}',
-                        level=AlertLevel.INFO
-                    )
+            #         wandb.alert(
+            #             title='Improvement!',
+            #             text=f'New best psnr: {psnr} in {self.wandb_cfg.name}',
+            #             level=AlertLevel.INFO
+            #         )
 
-            wandb.log(result_dict)
+            # wandb.log(result_dict)
             self.kl_annealer.update()
             self.teacher_forcing_scheduler.update()
 
