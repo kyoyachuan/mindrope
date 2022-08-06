@@ -1,5 +1,5 @@
 wandb:
-  name: 'kl_cyclical'
+  name: 'condition_convolution'
   project: 'DLPLAB4'
   entity: 'kyoyachuan' 
 
@@ -11,9 +11,9 @@ data:
   batch_size: 12
 
 model:
-  model_path: '/home/kyoyachuan/mindrope/save_models/kl_cyclical.pth'
-  cond_convolution: false
-  learned_prior: false
+  model_path: '/home/kyoyachuan/mindrope/save_models/condition_convolution.pth'
+  cond_convolution: true
+  learned_prior: true
   prior_rnn_layers: 1
   rnn_size: 256
   posterior_rnn_layers: 1

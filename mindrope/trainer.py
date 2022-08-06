@@ -18,7 +18,7 @@ class Trainer:
         self.evaluator = Evaluator(model, test_data_loader)
         self.train_cfg = train_cfg
         self.wandb_cfg = wandb_cfg
-        # self.init_wandb()
+        self.init_wandb()
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=train_cfg.lr)
         self.kl_annealer = KLAnnealing(
@@ -69,13 +69,13 @@ class Trainer:
                     self.model.best_psnr = psnr
                     self.model.best_epoch = epoch
                     self.model.save_model()
-            #         wandb.alert(
-            #             title='Improvement!',
-            #             text=f'New best psnr: {psnr} in {self.wandb_cfg.name}',
-            #             level=AlertLevel.INFO
-            #         )
+                    wandb.alert(
+                        title='Improvement!',
+                        text=f'New best psnr: {psnr} in {self.wandb_cfg.name}',
+                        level=AlertLevel.INFO
+                    )
 
-            # wandb.log(result_dict)
+            wandb.log(result_dict)
             self.kl_annealer.update()
             self.teacher_forcing_scheduler.update()
 
