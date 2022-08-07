@@ -113,10 +113,6 @@ class Trainer:
         for i in range(1, seq_len):
             h_target = h_seq[i][0]
             z_t, mu1, logvar1 = self.model.posterior(h_target)
-            mu2 = None
-            logvar2 = None
-            if self.model.model_cfg.learned_prior:
-                _, mu2, logvar2 = self.model.prior(h_target)
 
             if i < n_past or self.teacher_forcing_scheduler.do_teacher_forcing():
                 h, skip = h_seq[i-1]
@@ -126,6 +122,11 @@ class Trainer:
                     h, skip = result
                 else:
                     h = result[0]
+
+            mu2 = None
+            logvar2 = None
+            if self.model.model_cfg.learned_prior:
+                _, mu2, logvar2 = self.model.prior(h)
 
             h_pred = self.model.frame_predictor(torch.cat([h, z_t, train_cond[i]], 1))
             x_pred = self.model.decode([h_pred, skip], train_cond[i])
