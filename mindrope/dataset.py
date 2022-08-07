@@ -80,12 +80,11 @@ class BairDataset(Dataset):
             rows = csv.reader(csvfile)
             actions = []
             for i, row in enumerate(rows):
-                if i < start_idx:
-                    pass
-                if i == self.seq_len:
+                if i == self.seq_len + start_idx:
                     break
-                action = [float(value) for value in row]
-                actions.append(torch.tensor(action))
+                if i >= start_idx:
+                    action = [float(value) for value in row]
+                    actions.append(torch.tensor(action))
 
             actions = torch.stack(actions)
 
@@ -93,12 +92,11 @@ class BairDataset(Dataset):
             rows = csv.reader(csvfile)
             positions = []
             for i, row in enumerate(rows):
-                if i < start_idx:
-                    pass
-                if i == self.seq_len:
+                if i == self.seq_len + start_idx:
                     break
-                position = [float(value) for value in row]
-                positions.append(torch.tensor(position))
+                if i >= start_idx:
+                    position = [float(value) for value in row]
+                    positions.append(torch.tensor(position))
             positions = torch.stack(positions)
 
         return (actions, positions)
