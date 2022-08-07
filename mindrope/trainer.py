@@ -116,12 +116,12 @@ class Trainer:
             mu2 = None
             logvar2 = None
             if self.model.model_cfg.learned_prior:
-                z_t, mu2, logvar2 = self.model.prior(h_target)
+                _, mu2, logvar2 = self.model.prior(h_target)
 
-            if self.model.model_cfg.last_frame_skip or i < n_past or self.teacher_forcing_scheduler.do_teacher_forcing():
+            if i < n_past or self.teacher_forcing_scheduler.do_teacher_forcing():
                 h, skip = h_seq[i-1]
             else:
-                result = self.model.encode(x_pred, train_cond[i])
+                result = self.model.encode(x_pred, train_cond[i-1])
                 if self.model.model_cfg.last_frame_skip:
                     h, skip = result
                 else:

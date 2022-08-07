@@ -166,8 +166,8 @@ class SVGModel:
                 x_in = input[i]
             else:
                 z_t = self.sample_z(h)
-                h = self.frame_predictor(torch.cat([h, z_t, cond[i]], 1)).detach()
-                x_in = self.decode([h, skip], c_in).detach()
+                out = self.frame_predictor(torch.cat([h, z_t, cond[i]], 1)).detach()
+                x_in = self.decode([out, skip], cond[i]).detach()
             c_in = cond[i]
             pred.append(x_in)
         return torch.stack(pred)

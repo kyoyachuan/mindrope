@@ -109,7 +109,7 @@ class BairDataset(Dataset):
     def __getitem__(self, index):
         self.set_seed(index)
         start_idx = 0
-        if self.sliding_window:
+        if self.sliding_window and self.mode == 'train':
             start_idx = self.get_random_start_index()
         seq = self.get_seq(start_idx)
         cond = self.get_csv(start_idx)
