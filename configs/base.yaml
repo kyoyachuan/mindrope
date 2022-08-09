@@ -25,6 +25,7 @@ model:
   z_dim: 64
   g_dim: 128
   last_frame_skip: true
+  first_frame_skip: false
 
 trainer:
   niters: 300

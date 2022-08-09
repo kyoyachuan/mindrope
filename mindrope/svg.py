@@ -33,7 +33,6 @@ class SVGModel:
 
     def load_model(self):
         modules = torch.load(self.model_cfg.model_path)
-        self.model_cfg = modules['model_cfg']
         self.batch_size = modules['batch_size']
         self.best_epoch = modules['best_epoch']
         self.best_psnr = modules['best_psnr']
@@ -53,12 +52,13 @@ class SVGModel:
             self.prior.cuda()
 
     def init_model(self):
+        nskip = 2 if self.model_cfg.first_frame_skip else 1
         if self.model_cfg.cond_convolution:
             self.encoder = models.CondVGGEncoder(self.model_cfg.g_dim, ncond=7)
-            self.decoder = models.CondVGGDecoder(self.model_cfg.g_dim, ncond=7)
+            self.decoder = models.CondVGGDecoder(self.model_cfg.g_dim, nskip=nskip, ncond=7)
         else:
             self.encoder = models.VGGEncoder(self.model_cfg.g_dim)
-            self.decoder = models.VGGDecoder(self.model_cfg.g_dim)
+            self.decoder = models.VGGDecoder(self.model_cfg.g_dim, nskip=nskip)
         self.encoder.apply(init_weights)
         self.decoder.apply(init_weights)
 
@@ -152,11 +152,15 @@ class SVGModel:
         x_in, c_in = input[0], cond[0]
         for i in range(1, n_past + n_future):
             h = self.encode(x_in, c_in)
+            if self.model_cfg.first_frame_skip and i - 1 == 0:
+                first_skip = [s.detach() for s in h[1]]
             if self.model_cfg.last_frame_skip or i < n_past:
                 h, skip = h
             else:
                 h, _ = h
             h = h.detach()
+            if self.model_cfg.first_frame_skip:
+                skip = [torch.cat((skip[s], first_skip[s]), 1) for s in range(len(skip))]
             if i < n_past:
                 h_target = self.encode(input[i], cond[i])
                 h_target = h_target[0].detach()

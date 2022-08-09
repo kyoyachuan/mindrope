@@ -59,9 +59,10 @@ class VGGEncoder(nn.Module):
 
 
 class VGGDecoder(nn.Module):
-    def __init__(self, dim):
+    def __init__(self, dim, nskip=1):
         super(VGGDecoder, self).__init__()
         self.dim = dim
+        self.nskip = nskip + 1
         # 1 x 1 -> 4 x 4
         self.upc1 = nn.Sequential(
             nn.ConvTranspose2d(dim, 512, 4, 1, 0),
@@ -70,24 +71,24 @@ class VGGDecoder(nn.Module):
         )
         # 8 x 8
         self.upc2 = nn.Sequential(
-            VGGLayer(512*2, 512),
+            VGGLayer(512 * self.nskip, 512),
             VGGLayer(512, 512),
             VGGLayer(512, 256)
         )
         # 16 x 16
         self.upc3 = nn.Sequential(
-            VGGLayer(256*2, 256),
+            VGGLayer(256 * self.nskip, 256),
             VGGLayer(256, 256),
             VGGLayer(256, 128)
         )
         # 32 x 32
         self.upc4 = nn.Sequential(
-            VGGLayer(128*2, 128),
+            VGGLayer(128 * self.nskip, 128),
             VGGLayer(128, 64)
         )
         # 64 x 64
         self.upc5 = nn.Sequential(
-            VGGLayer(64*2, 64),
+            VGGLayer(64 * self.nskip, 64),
             nn.ConvTranspose2d(64, 3, 3, 1, 1),
             nn.Sigmoid()
         )

@@ -108,9 +108,10 @@ class CondVGGEncoder(nn.Module):
 
 
 class CondVGGDecoder(nn.Module):
-    def __init__(self, dim, ncond=7):
+    def __init__(self, dim, nskip=1, ncond=7):
         super(CondVGGDecoder, self).__init__()
         self.dim = dim
+        self.nskip = nskip + 1
         self.ncond = ncond
         # 1 x 1 -> 4 x 4
         self.upc1 = nn.Sequential(
@@ -119,21 +120,21 @@ class CondVGGDecoder(nn.Module):
             nn.LeakyReLU(0.2, inplace=True)
         )
         # 8 x 8
-        self.upc2_1 = CondVGGLayer(ncond, 512*2, 512)
+        self.upc2_1 = CondVGGLayer(ncond, 512 * self.nskip, 512)
         self.upc2_2 = CondVGGLayer(ncond, 512, 512)
         self.upc2_3 = CondVGGLayer(ncond, 512, 256)
 
         # 16 x 16
-        self.upc3_1 = CondVGGLayer(ncond, 256*2, 256)
+        self.upc3_1 = CondVGGLayer(ncond, 256 * self.nskip, 256)
         self.upc3_2 = CondVGGLayer(ncond, 256, 256)
         self.upc3_3 = CondVGGLayer(ncond, 256, 128)
 
         # 32 x 32
-        self.upc4_1 = CondVGGLayer(ncond, 128*2, 128)
+        self.upc4_1 = CondVGGLayer(ncond, 128 * self.nskip, 128)
         self.upc4_2 = CondVGGLayer(ncond, 128, 64)
 
         # 64 x 64
-        self.upc5 = CondVGGLayer(ncond, 64*2, 64)
+        self.upc5 = CondVGGLayer(ncond, 64 * self.nskip, 64)
 
         self.upc6 = nn.Sequential(
             CondConvTranspose2d(ncond, 64, 3, 3, 1, 1),

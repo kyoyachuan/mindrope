@@ -110,6 +110,8 @@ class Trainer:
         mse = 0
         kld = 0
         h_seq = [self.model.encode(train_seq[i], train_cond[i]) for i in range(seq_len)]
+        if self.model.model_cfg.first_frame_skip:
+            first_skip = h_seq[0][1]
         for i in range(1, seq_len):
             h_target = h_seq[i][0]
             z_t, mu1, logvar1 = self.model.posterior(h_target)
@@ -122,6 +124,9 @@ class Trainer:
                     h, skip = result
                 else:
                     h = result[0]
+
+            if self.model.model_cfg.first_frame_skip:
+                skip = [torch.cat((skip[s], first_skip[s]), 1) for s in range(len(skip))]
 
             mu2 = None
             logvar2 = None
