@@ -3,7 +3,7 @@ base:
   num_workers: 6
 
 wandb:
-  name: 'base'
+  name: 'first_frame_skip_fp'
   project: 'DLPLAB4'
   entity: 'kyoyachuan' 
 
@@ -15,8 +15,8 @@ data:
   batch_size: 12
 
 model:
-  model_path: '/home/kyoyachuan/mindrope/save_models/base.pth'
-  cond_convolution: false
+  model_path: '/home/kyoyachuan/mindrope/save_models/first_frame_skip_fp.pth'
+  cond_convolution: true
   learned_prior: false
   prior_rnn_layers: 1
   rnn_size: 256
@@ -25,7 +25,7 @@ model:
   z_dim: 64
   g_dim: 128
   last_frame_skip: true
-  first_frame_skip: false
+  first_frame_skip: true
 
 trainer:
   niters: 300

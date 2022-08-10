@@ -30,9 +30,9 @@ def kl_criterion(mu1, logvar1, mu2=None, logvar2=None, size=100):
 class KLAnnealing():
     def __init__(self, kl_anneal_cyclical, kl_anneal_ratio, kl_anneal_cycle, niter):
         self.kl_anneal_cyclical = kl_anneal_cyclical
-        self.R = 1 / kl_anneal_ratio
-        self.M = kl_anneal_cycle
-        self.T = niter
+        self.ratio = kl_anneal_ratio
+        self.cycle = kl_anneal_cycle
+        self.fulliter = niter
         self.count = 1
 
     def update(self):
@@ -40,14 +40,14 @@ class KLAnnealing():
 
     def get_beta(self):
         t = self.count
-        tao = ((t - 1) % math.ceil(self.T / self.M)) / (self.T / self.M)
-        if tao > self.R:
+        tao = ((t - 1) % math.ceil(self.fulliter / self.cycle)) / (self.fulliter / self.cycle)
+        if tao > self.ratio:
             beta = 1
         else:
-            beta = tao / self.R
+            beta = tao / self.ratio
 
         # monotonic
-        if not self.kl_anneal_cyclical and t >= (self.T / self.M):
+        if not self.kl_anneal_cyclical and t >= (self.fulliter / self.cycle):
             beta = 1
 
         return beta

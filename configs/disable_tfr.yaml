@@ -32,7 +32,7 @@ trainer:
   epoch_size: 600
   lr: 0.002
   kl_anneal_cyclical: true
-  kl_anneal_ratio: 2
+  kl_anneal_ratio: 0.5
   kl_anneal_cycle: 3
   tfr: 0.0
   tfr_start_decay_epoch: 100
